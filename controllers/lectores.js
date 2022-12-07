@@ -111,4 +111,57 @@ const agregarLector = async (req =request, res = response) => {
     }
 }
 
-module.exports = {verLectores, verLectorPorID, agregarLector}
+const actlzrLectorPorUsuario = async (req =request, res = response) => {
+    const {
+        Usuario,
+        Nombre,
+        Apellidos,
+        Edad,
+    } = req.body
+
+    if(
+        !Usuario||
+        !Nombre||
+        !Apellidos||
+        !Edad
+    ){
+        res.status(400).json({msg:"Falta información del usuario."})
+        return
+    }
+
+    let conn;
+
+    try{
+        conn = await pool.getConnection()
+
+        const [lector] = await conn.query(consultasLectores.obtInfoUsuario, [Usuario])
+
+        if(!lector){
+            res.status(403).json({msg:`El usuario '${Usuario}' no se encuentra registrado.`})
+            return
+        }
+
+
+        const {affectedRows} = await conn.query(consultasLectores.actlzrUsuario, [
+            Nombre || lector.Nombre,
+            Apellidos || lector.Apellidos,
+            Edad || lector.Edad,
+            Usuario
+        ], (error)=>{throw new error})
+
+        if(affectedRows===0){
+            res.status(404).json({msg:`No se pudo actualizar el registro del usuario ${Usuario}`})
+            return
+        }
+        res.json({msg:`El usuario ${Usuario} se actualizó satisfactoriamente.`})
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error})
+    }finally{
+        if(conn){
+            conn.end()
+        }
+    }
+}
+
+module.exports = {verLectores, verLectorPorID, agregarLector,actlzrLectorPorUsuario}
