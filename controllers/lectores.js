@@ -111,6 +111,7 @@ const agregarLector = async (req =request, res = response) => {
     }
 }
 
+//Endpoint para actualizar un usuario en la tabla lectores.
 const actlzrLectorPorUsuario = async (req =request, res = response) => {
     const {
         Usuario,
@@ -164,4 +165,142 @@ const actlzrLectorPorUsuario = async (req =request, res = response) => {
     }
 }
 
-module.exports = {verLectores, verLectorPorID, agregarLector,actlzrLectorPorUsuario}
+//Endpoint para desactivar un usuario en la tabla lectores.
+const desactLector = async (req =request, res = response) => {
+    const {id} = req.query
+    let conn;
+
+    try{
+        conn = await pool.getConnection()
+        const {affectedRows} = await conn.query(consultasLectores.desactLector, [id], (error)=>{throw new error})
+        if(affectedRows===0){
+            res.status(404).json({msg:`No se pudo eliminar el registro con el ID ${id}`})
+            return
+        }
+        res.json({msg:`El usuario con ID ${id} se eliminó satisfactoriamente.`})
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error})
+    }finally{
+        if(conn){
+            conn.end()
+        }
+    }
+}
+
+//Endpoint para iniciar sesión.
+const iniSesion = async (req =request, res = response) => {
+    const {
+        Usuario,
+        Contrasena
+    } = req.body
+
+    if(
+        !Usuario||
+        !Contrasena
+    ){
+        res.status(400).json({msg:"Falta información del usuario."})
+        return
+    }
+
+    let conn;
+
+    try{
+        conn = await pool.getConnection()
+
+        const [lector] = await conn.query(consultasLectores.conIniSesion, [Usuario])
+
+        if(!lector || lector.Activo === 'N'){
+            let code = !lector ? 1:2;
+            res.status(403).json({msg:`El usuario o la contraseña son incorrectos.`, errorCode:code})
+            return
+        }
+
+        const accesoValido = bcryptjs.compareSync(Contrasena, lector.Contrasena)
+
+        if(!accesoValido){
+            res.status(403).json({msg:`El usuario o la contraseña son incorrectos.`, errorCode:3})
+            return
+        }
+
+        res.json({msg:`El usuario ${Usuario} ha iniciado sesión satisfactoriamente.`})
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error})
+    }finally{
+        if(conn){
+            conn.end()
+        }
+    }
+}
+
+//Endpoint para actualizar contraseña.
+const actlzContrasena = async (req =request, res = response) => {
+    const {
+        Usuario,
+        Contrasena,
+        ContrasenaNueva
+    } = req.body
+
+    if(
+        !Usuario,
+        !Contrasena,
+        !ContrasenaNueva
+    ){
+        res.status(400).json({msg:"Falta información del usuario."})
+        return
+    }
+
+    let conn;
+
+    try{
+        conn = await pool.getConnection()
+
+        const [lector] = await conn.query(consultasLectores.conIniSesion, [Usuario])
+
+        if(!lector){
+            res.status(403).json({msg:`El usuario '${Usuario}' no se encuentra registrado.`})
+            return
+        }
+        if(!lector || lector.Activo === 'N'){
+            let code = !lector ? 1:2;
+            res.status(403).json({msg:`El usuario o la contraseña son incorrectos.`, errorCode:code})
+            return
+        }
+
+        const accesoValido = bcryptjs.compareSync(Contrasena, lector.Contrasena)
+
+        if(!accesoValido){
+            res.status(403).json({msg:`El usuario o la contraseña son incorrectos.`, errorCode:3})
+            return
+        }
+
+        if(Contrasena===ContrasenaNueva){
+            res.status(403).json({msg:`No puede utilizar la contraseña anterior, ingrese una nueva.`})
+            return
+        }
+
+        const salt = bcryptjs.genSaltSync()
+        const contrasenaCifrada = bcryptjs.hashSync(ContrasenaNueva, salt)
+
+        const {affectedRows} = await conn.query(consultasLectores.conActlzContra, [
+            contrasenaCifrada,
+            Usuario
+        ], (error)=>{throw new error})
+
+        if(affectedRows===0){
+            res.status(404).json({msg:`No se pudo actualizar la contraseña`})
+            return
+        }
+        res.json({msg:`La contraseña se actualizó satisfactoriamente.`})
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error})
+    }finally{
+        if(conn){
+            conn.end()
+        }
+    }
+}
+
+module.exports = {verLectores, verLectorPorID, agregarLector,actlzrLectorPorUsuario, desactLector, iniSesion, actlzContrasena}

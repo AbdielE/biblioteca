@@ -37,5 +37,13 @@ const consultasLectores = {
         Apellidos = ?,
         Edad = ?
     WHERE Usuario = ?`,
+    desactLector:                                   //Consulta para desactivar un usuario dado.
+    `UPDATE lectores SET Activo='N' WHERE ID = ?`,
+    conIniSesion:                                    //Consulta para iniciar sesión.
+    `SELECT Usuario, Contrasena, Activo FROM lectores WHERE Usuario = ?`,
+    conActlzContra:                                 //Consulta para actualizar contraseña.
+    `UPDATE lectores SET
+        Contrasena = ?
+    WHERE Usuario = ?` 
 }
 module.exports = {consultasLectores}
