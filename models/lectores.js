@@ -35,7 +35,7 @@ const consultasLectores = {
     `UPDATE lectores SET
         Nombre = ?,
         Apellidos = ?,
-        Edad = ?,
+        Edad = ?
     WHERE Usuario = ?`,
 }
 module.exports = {consultasLectores}
