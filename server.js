@@ -1,11 +1,13 @@
 const express = require('express')
 const cors = require("cors")
 const lectores = require("./routes/lectores")
+const libros = require("./routes/libros")
 class Server{
     constructor(){
         this.app = express()
         this.paths = {
             lectores:"/api/v1/lectores",
+            libros:"/api/v1/libros",
         }
         this.middlewares()
         this.routes()
@@ -13,6 +15,7 @@ class Server{
 
     routes(){
         this.app.use(this.paths.lectores, lectores)
+        this.app.use(this.paths.libros, libros)
     }
 
     middlewares(){

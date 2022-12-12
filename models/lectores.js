@@ -1,9 +1,9 @@
 const consultasLectores = {
     conVerLectores:                                 //Consulta para ver todos los usuarios de la tabla.
-    `SELECT ID, Usuario, Nombre, Apellidos, Edad, Activo, Creado, Modificado
+    `SELECT ID, Usuario, Nombre, Apellidos, Domicilio, Telefono, Activo, Creado, Modificado
         FROM lectores`,                            
     conVerLectorPorID:                              //Consulta para ver el usuario lector según el ID dado.
-    `SELECT ID,  Usuario, Nombre,  Apellidos, Edad, Activo, Creado, Modificado
+    `SELECT ID,  Usuario, Nombre,  Apellidos, Domicilio, Telefono, Activo, Creado, Modificado
         FROM lectores
         WHERE ID = ?`,       
     conExisteLector:                                //Consulta para comprobar si ya existe un usuario igual.
@@ -16,7 +16,8 @@ const consultasLectores = {
         Usuario,
         Nombre,
         Apellidos,
-        Edad,
+        Domicilio,
+	    Telefono,
         Contrasena,
         Activo
     ) VALUES (
@@ -25,18 +26,22 @@ const consultasLectores = {
         ?,
         ?,
         ?,
-        ?
+        ?,
+    	?
     )`,
     obtInfoUsuario:                                 //Consulta para obtener información del usuario dado.
-    `SELECT Usuario, Nombre, Apellidos, Edad 
+    `SELECT Usuario, Nombre, Apellidos, Domicilio, Telefono
         FROM lectores 
         WHERE Usuario = ?`,
     actlzrUsuario:                                  //Consulta para actualizar información del usuario dado.
     `UPDATE lectores SET
         Nombre = ?,
         Apellidos = ?,
-        Edad = ?
+        Domicilio = ?,
+	    Telefono = ?,
+        Activo = ?
     WHERE Usuario = ?`,
+
     desactLector:                                   //Consulta para desactivar un usuario dado.
     `UPDATE lectores SET Activo='N' WHERE ID = ?`,
     conIniSesion:                                    //Consulta para iniciar sesión.

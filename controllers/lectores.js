@@ -56,7 +56,8 @@ const agregarLector = async (req =request, res = response) => {
         Usuario,
         Nombre,
         Apellidos,
-        Edad,
+        Domicilio,
+	    Telefono,
         Contrasena,
         Activo
     } = req.body
@@ -65,7 +66,8 @@ const agregarLector = async (req =request, res = response) => {
         !Usuario||
         !Nombre||
         !Apellidos||
-        !Edad||
+        !Domicilio ||
+	    !Telefono ||
         !Contrasena||
         !Activo
     ){
@@ -91,7 +93,8 @@ const agregarLector = async (req =request, res = response) => {
             Usuario,
             Nombre,
             Apellidos,
-            Edad,
+            Domicilio,
+            Telefono,
             contrasenaCifrada,
             Activo
         ], (error)=>{throw new error})
@@ -117,14 +120,17 @@ const actlzrLectorPorUsuario = async (req =request, res = response) => {
         Usuario,
         Nombre,
         Apellidos,
-        Edad,
+        Domicilio,
+	    Telefono,
+        Activo
     } = req.body
 
     if(
         !Usuario||
         !Nombre||
         !Apellidos||
-        !Edad
+        !Domicilio||
+	    !Telefono
     ){
         res.status(400).json({msg:"Falta información del usuario."})
         return
@@ -146,7 +152,9 @@ const actlzrLectorPorUsuario = async (req =request, res = response) => {
         const {affectedRows} = await conn.query(consultasLectores.actlzrUsuario, [
             Nombre || lector.Nombre,
             Apellidos || lector.Apellidos,
-            Edad || lector.Edad,
+            Domicilio|| lector.Domicilio,
+            Telefono|| lector.Telefono,
+            Activo||lector.Activo,
             Usuario
         ], (error)=>{throw new error})
 

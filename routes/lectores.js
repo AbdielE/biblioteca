@@ -16,7 +16,6 @@ router.post("/iniciar", iniSesion)
 router.put("/", actlzrLectorPorUsuario)
 router.put("/actContra", actlzContrasena)
 
-
 //DELETE
 router.delete("/", desactLector) // http://localhost:4000/api/v1/lectores/?id=1
 
