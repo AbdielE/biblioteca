@@ -1,10 +1,8 @@
 const consultasLibros = {
     conVerlibros:                                 //Consulta para ver todos los libros de la tabla.
-    `SELECT ISBN, titulo, autor, editorial, volumen, edicion, genero, lugarPub, fechaPub, estado
-        FROM libros`,                            
+    `SELECT * FROM libros`,                            
     conBuscarLibro:                              //Consulta para buscar un libro.
-    `SELECT ISBN, titulo, autor, editorial, volumen, edicion, genero, lugarPub, fechaPub, estado
-        FROM libros
+    `SELECT * FROM libros
         WHERE ISBN = ? OR titulo = ?`,       
     conExisteLibro:                                //Consulta para comprobar si ya existe un libro igual.
     `SELECT ISBN 

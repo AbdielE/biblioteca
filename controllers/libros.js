@@ -8,7 +8,7 @@ const verlibros = async (req =request, res = response) => {
 
     try{
         conn = await pool.getConnection()
-        const [libros] = await conn.query(consultasLibros.conVerlibros, (error)=>{throw new error})
+        const libros = await conn.query(consultasLibros.conVerlibros, (error)=>{throw new error})
         
         if(!libros){
             res.status(404).json({msg:"No se encontraron registros"})

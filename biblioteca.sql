@@ -34,7 +34,7 @@ CREATE TABLE `lectores` (
   `Creado` timestamp NOT NULL DEFAULT current_timestamp(),
   `Modificado` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `lectores` (
 
 LOCK TABLES `lectores` WRITE;
 /*!40000 ALTER TABLE `lectores` DISABLE KEYS */;
-INSERT INTO `lectores` VALUES (1,'abdiel','Abdiel E.','Alfonso Ch.','calle v','2871456848','$2a$10$VUExTGF8G3mhswj.9NOSGuvqfSG7sXkz0K5cGIOjVB9LwnCFIKuYq','S','2022-12-12 16:20:51','2022-12-12 16:29:00');
+INSERT INTO `lectores` VALUES (1,'abdiel','Abdiel E.','Alfonso Ch.','calle v','2871456848','$2a$10$VUExTGF8G3mhswj.9NOSGuvqfSG7sXkz0K5cGIOjVB9LwnCFIKuYq','S','2022-12-12 16:20:51','2022-12-12 16:29:00'),(2,'abdiel esteban','Abdiel Esteban 2','Alfonso Chávez 2','calle colonia 2','2871461674','$2a$10$DSzZmin3/Ta0D0aNnyP/pueRAlJcf3nG60wIdRNn5qBmdSeHdEAni','S','2022-12-13 16:10:29','2022-12-13 16:10:29');
 /*!40000 ALTER TABLE `lectores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,8 +75,40 @@ CREATE TABLE `libros` (
 
 LOCK TABLES `libros` WRITE;
 /*!40000 ALTER TABLE `libros` DISABLE KEYS */;
-INSERT INTO `libros` VALUES ('123','Libro','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','prestado');
+INSERT INTO `libros` VALUES ('123','Libro','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo'),('1234567891234','Libro 3','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo');
 /*!40000 ALTER TABLE `libros` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `prestamo`
+--
+
+DROP TABLE IF EXISTS `prestamo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `prestamo` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ISBNlibro` varchar(13) NOT NULL,
+  `IDlector` int(11) NOT NULL,
+  `fcPrest` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fcEntrega` date NOT NULL,
+  `estado` varchar(10) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `ISBNlibro` (`ISBNlibro`),
+  KEY `IDlector` (`IDlector`),
+  CONSTRAINT `prestamo_ibfk_1` FOREIGN KEY (`ISBNlibro`) REFERENCES `libros` (`ISBN`),
+  CONSTRAINT `prestamo_ibfk_2` FOREIGN KEY (`IDlector`) REFERENCES `lectores` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `prestamo`
+--
+
+LOCK TABLES `prestamo` WRITE;
+/*!40000 ALTER TABLE `prestamo` DISABLE KEYS */;
+INSERT INTO `prestamo` VALUES (1,'123',2,'2022-12-13 17:26:15','2000-09-20','Devuelto'),(2,'123',2,'2022-12-13 17:26:38','2000-09-20','Activo'),(3,'1234567891234',2,'2022-12-13 17:30:44','2000-09-20','Activo');
+/*!40000 ALTER TABLE `prestamo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -88,4 +120,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-12 11:56:08
+-- Dump completed on 2022-12-13 11:44:02

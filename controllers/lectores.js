@@ -9,7 +9,7 @@ const verLectores = async (req =request, res = response) => {
 
     try{
         conn = await pool.getConnection()
-        const [lectores] = await conn.query(consultasLectores.conVerLectores, (error)=>{throw new error})
+        const lectores = await conn.query(consultasLectores.conVerLectores, (error)=>{throw new error})
         
         if(!lectores){
             res.status(404).json({msg:"No se encontraron registros"})
