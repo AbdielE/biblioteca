@@ -58,8 +58,7 @@ const agregarLector = async (req =request, res = response) => {
         Apellidos,
         Domicilio,
 	    Telefono,
-        Contrasena,
-        Activo
+        Contrasena
     } = req.body
 
     if(
@@ -68,8 +67,7 @@ const agregarLector = async (req =request, res = response) => {
         !Apellidos||
         !Domicilio ||
 	    !Telefono ||
-        !Contrasena||
-        !Activo
+        !Contrasena
     ){
         res.status(400).json({msg:"Falta información del usuario."})
         return
@@ -95,8 +93,7 @@ const agregarLector = async (req =request, res = response) => {
             Apellidos,
             Domicilio,
             Telefono,
-            contrasenaCifrada,
-            Activo
+            contrasenaCifrada
         ], (error)=>{throw new error})
 
         if(affectedRows===0){

@@ -27,7 +27,7 @@ const consultasLectores = {
         ?,
         ?,
         ?,
-    	?
+    	'S'
     )`,
     obtInfoUsuario:                                 //Consulta para obtener información del usuario dado.
     `SELECT Usuario, Nombre, Apellidos, Domicilio, Telefono
@@ -44,7 +44,7 @@ const consultasLectores = {
 
     desactLector:                                   //Consulta para desactivar un usuario dado.
     `UPDATE lectores SET Activo='N' WHERE ID = ?`,
-    conIniSesion:                                    //Consulta para iniciar sesión.
+    conIniSesion:                                   //Consulta para iniciar sesión.
     `SELECT Usuario, Contrasena, Activo FROM lectores WHERE Usuario = ?`,
     conActlzContra:                                 //Consulta para actualizar contraseña.
     `UPDATE lectores SET

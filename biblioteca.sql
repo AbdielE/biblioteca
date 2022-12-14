@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.6.11-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.11.1-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: biblioteca
 -- ------------------------------------------------------
--- Server version	10.6.11-MariaDB-0ubuntu0.22.04.1
+-- Server version	10.11.1-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -43,7 +43,9 @@ CREATE TABLE `lectores` (
 
 LOCK TABLES `lectores` WRITE;
 /*!40000 ALTER TABLE `lectores` DISABLE KEYS */;
-INSERT INTO `lectores` VALUES (1,'abdiel','Abdiel E.','Alfonso Ch.','calle v','2871456848','$2a$10$VUExTGF8G3mhswj.9NOSGuvqfSG7sXkz0K5cGIOjVB9LwnCFIKuYq','S','2022-12-12 16:20:51','2022-12-12 16:29:00'),(2,'abdiel esteban','Abdiel Esteban 2','Alfonso Chávez 2','calle colonia 2','2871461674','$2a$10$DSzZmin3/Ta0D0aNnyP/pueRAlJcf3nG60wIdRNn5qBmdSeHdEAni','S','2022-12-13 16:10:29','2022-12-13 16:10:29');
+INSERT INTO `lectores` VALUES
+(1,'abdiel','Abdiel E.','Alfonso Ch.','calle v','2871456848','$2a$10$VUExTGF8G3mhswj.9NOSGuvqfSG7sXkz0K5cGIOjVB9LwnCFIKuYq','S','2022-12-12 16:20:51','2022-12-12 16:29:00'),
+(2,'abdiel esteban','Abdiel Esteban 2','Alfonso Chávez 2','calle colonia 2','2871461674','$2a$10$DSzZmin3/Ta0D0aNnyP/pueRAlJcf3nG60wIdRNn5qBmdSeHdEAni','S','2022-12-13 16:10:29','2022-12-13 16:10:29');
 /*!40000 ALTER TABLE `lectores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +77,10 @@ CREATE TABLE `libros` (
 
 LOCK TABLES `libros` WRITE;
 /*!40000 ALTER TABLE `libros` DISABLE KEYS */;
-INSERT INTO `libros` VALUES ('123','Libro','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo'),('1234567891234','Libro 3','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo');
+INSERT INTO `libros` VALUES
+('123','Libro','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo'),
+('12345673234','Libro 2','persona 2','casa editora 2',2,'si','fantasia','mexico','2000-01-01','Activo'),
+('1234567891234','Libro 3','persona','casa editora',20,'si','fantasia','mexico','2000-01-01','Activo');
 /*!40000 ALTER TABLE `libros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +103,7 @@ CREATE TABLE `prestamo` (
   KEY `IDlector` (`IDlector`),
   CONSTRAINT `prestamo_ibfk_1` FOREIGN KEY (`ISBNlibro`) REFERENCES `libros` (`ISBN`),
   CONSTRAINT `prestamo_ibfk_2` FOREIGN KEY (`IDlector`) REFERENCES `lectores` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +112,12 @@ CREATE TABLE `prestamo` (
 
 LOCK TABLES `prestamo` WRITE;
 /*!40000 ALTER TABLE `prestamo` DISABLE KEYS */;
-INSERT INTO `prestamo` VALUES (1,'123',2,'2022-12-13 17:26:15','2000-09-20','Devuelto'),(2,'123',2,'2022-12-13 17:26:38','2000-09-20','Activo'),(3,'1234567891234',2,'2022-12-13 17:30:44','2000-09-20','Activo');
+INSERT INTO `prestamo` VALUES
+(1,'123',2,'2022-12-13 17:26:15','2000-09-20','Devuelto'),
+(11,'1234567891234',1,'2022-12-14 04:52:17','2000-09-20','Devuelto'),
+(12,'1234567891234',1,'2022-12-14 05:15:57','2000-09-20','Devuelto'),
+(13,'1234567891234',1,'2022-12-14 05:43:52','2000-09-20','Devuelto'),
+(14,'1234567891234',1,'2022-12-14 05:49:06','2000-09-20','Devuelto');
 /*!40000 ALTER TABLE `prestamo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -120,4 +130,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-13 11:44:02
+-- Dump completed on 2022-12-14  0:07:00

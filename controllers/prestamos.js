@@ -54,15 +54,13 @@ const registrarPrestamo = async (req =request, res = response) => {
     const {
         ISBNlibro,
         IDlector,
-        fcEntrega,
-	    estado
+        fcEntrega
     } = req.body
 
     if(
         !ISBNlibro||
         !IDlector||
-        !fcEntrega||
-        !estado
+        !fcEntrega
     ){
         res.status(400).json({msg:"Falta información del prestamo."})
         return
@@ -82,11 +80,15 @@ const registrarPrestamo = async (req =request, res = response) => {
         const {affectedRows} = await conn.query(consultasPrestamos.conAgregarPrestamo, [
             ISBNlibro,
             IDlector,
-            fcEntrega,
-            estado
+            fcEntrega
         ], (error)=>{throw new error})
 
         if(affectedRows===0){
+            res.status(404).json({msg:`No se pudo agregar el registro del prestamo.`})
+            return
+        }
+        const {affectedRows2} = await conn.query(consultasPrestamos.conActLibro, [ISBNlibro], (error)=>{throw new error})
+        if(affectedRows2===0){
             res.status(404).json({msg:`No se pudo agregar el registro del prestamo.`})
             return
         }
@@ -104,48 +106,70 @@ const registrarPrestamo = async (req =request, res = response) => {
 //Endpoint para actualizar un Prestamo.
 const actlzEdoPrestamo = async (req =request, res = response) => {
     const {
-        ID,
-	    estado
+        IDPrestamo,
+	    edoPrestamo
     } = req.body
 
     if(
-        !ID||
-        !estado
+        !IDPrestamo||
+        !edoPrestamo
     ){
         res.status(400).json({msg:"Falta información del Prestamo."})
         return
     }
 
-    let conn;
+    if (edoPrestamo=="Devuelto" || edoPrestamo=="Atrasado") {
+        let conn;
+        try{
+            conn = await pool.getConnection()
 
-    try{
-        conn = await pool.getConnection()
+            const [Prestamo] = await conn.query(consultasPrestamos.conExistePrestamo, [IDPrestamo])
 
-        const [Prestamo] = await conn.query(consultasPrestamos.conExistePrestamo, [ID])
+            if(!Prestamo){
+                res.status(403).json({msg:`El Prestamo con ID '${ID}' no se encuentra registrado.`})
+                return
+            }
 
-        if(!Prestamo){
-            res.status(403).json({msg:`El Prestamo con ID '${ID}' no se encuentra registrado.`})
-            return
+            if (Prestamo.estado=="Devuelto") {
+                res.status(404).json({msg:`El prestamo ya se encuentra registrado como `+Prestamo.estado+"."})
+                return
+            }
+
+            if(edoPrestamo=="Devuelto"){
+                const {affectedRows} = await conn.query(consultasPrestamos.conDevolverPrestamo, [
+                    edoPrestamo,
+                    IDPrestamo,
+                    Prestamo.ISBNlibro
+                ], (error)=>{throw new error})
+        
+                if(affectedRows===0){
+                    res.status(404).json({msg:`No se pudo actualizar el estado del prestamo.`})
+                    return
+                }
+                res.json({msg:`El estado del prestamo ha cambiado a `+edoPrestamo})
+            }
+
+            if(edoPrestamo=="Atrasado"){
+                const {affectedRows} = await conn.query(consultasPrestamos.conAtrasarPrestamo,[IDPrestamo], (error)=>{throw new error})
+        
+                if(affectedRows===0){
+                    res.status(404).json({msg:`No se pudo actualizar el estado del prestamo.`})
+                    return
+                }
+                res.json({msg:`El estado del prestamo ha cambiado a `+edoPrestamo})
+            }
+    
+        }catch(error){
+            console.log(error)
+            res.status(500).json({error})
+        }finally{
+            if(conn){
+                conn.end()
+            }
         }
-
-
-        const {affectedRows} = await conn.query(consultasPrestamos.conActlzEdoPrestamo, [
-            estado,
-            ID
-        ], (error)=>{throw new error})
-
-        if(affectedRows===0){
-            res.status(404).json({msg:`No se pudo actualizar el estado del prestamo.`})
-            return
-        }
-        res.json({msg:`El estado del prestamo se actualizó satisfactoriamente.`})
-    }catch(error){
-        console.log(error)
-        res.status(500).json({error})
-    }finally{
-        if(conn){
-            conn.end()
-        }
+    }else{
+        res.status(400).json({msg:"El estado '"+edoPrestamo+"' no está permitido. Los prestamos solo pueden cambiar a 'Devuelto' o 'Atrasado'."})
+        return
     }
 }
 
